@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;0,800;1,400;1,800&display=swap');
+
+:root{
+    --white: hsl(0, 0%, 100%);
+    --off-white: hsl(0, 0%, 94%);
+    --light-grey: hsl(0, 0%, 86%);
+    --smokey-grey: hsl(0, 1%, 60%);
+    --off-black: sl(0, 0%, 8%);
+    --purple: hsl(259, 100%, 65%);
+    --light-red: hsl(0, 100%, 67%);
+}
+
+body{
+    background-color: var(--light-grey);
+    font-family: "Poppins", sans-serif;
+    max-height: 100vh;
+}
+
+.calculator-app{
+    background-color: #fff;
+    padding: 3em;
+    border-radius: 10px 10px 120px 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.entry-fields {
+    display: flex;
+}
+
+.entry-fields>div {
+    margin-right: 2em;
+}
+
+label {
+    color: var(--smokey-grey);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: .81em;
+}
+
+input {
+    padding: 1em;
+    border: 1px solid var(--smokey-grey);
+    border-radius: 5px;
+    width: 100px;
+}
+
+::placeholder{
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
+    font-size: 1.5em;
+    color: var(--smokey-grey);
+}
+
+.submit-btn {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.submit-btn input {
+    background-image: url(./images/icon-arrow.svg);
+    background-color: var(--purple);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 12px solid var(--purple);
+    border-radius: 50%;
+    padding: 1em;
+    width: 55px;
+    height: 55px;
+    cursor: pointer;
+    margin: 2em 0;
+    z-index: 10;
+}
+
+hr {
+    position: absolute;
+    bottom: 50%;
+    width: 96%;
+    right: 20px;
+    color: var(--light-grey);
+    opacity: .5;
+}
+
+span.dash {
+    color: var(--purple);
+    line-height: inherit;
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+.entered-values {
+    margin-bottom: 4em;
+}
+
+.entered-values p {
+    font-size: 3em;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+    font-style: italic;
+}
+
+.validate.block {
+    color: var(--light-red);
+    font-size: 12px;
+    display: block;
+    margin: 5px 0;
+    font-style: italic;
+}
+
+.validate{
+    display: none;
+}
+
+.invalid-entry{
+    color: var(--light-red);
+    border-color: var(--light-red);
+}
+
+input:hover{
+    border-color: var(--purple);
+}
+
+.submit-btn input:hover {
+    background-color: #000;
+    border-color: #000;
+}
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .calculator-app{
+    padding: 1em;
+  }
+
+  input{
+    width: 60px;
+  }
+}  
