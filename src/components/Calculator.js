@@ -11,10 +11,10 @@ export default function Calculator(){
     const handleDayChange = (e) => {
         const value = e.target.value;
         setDay(value);
-
-        //Create a new date object for the current date
-        const currentDate = new Date();
     }
+
+    //Create a new date object for the current date
+    const currentDate = new Date();
 
     function validateForm(){
         if (day.length === 0 || month.length === 0 || year.length === 0 ){
@@ -49,7 +49,7 @@ export default function Calculator(){
                             required
                             value={day}
                             onChange={handleDayChange}
-                            className={day.length === 0 && showValidate ? "invalid-entry" : ""}
+                            className={day.length === 0 && showValidate ? "invalid-entry" : "" || day !== "" && (day < 1 || day > 31) && showValidate ? "invalid-entry" : ""}
                         />
                         {day.length === 0 && showValidate && <p className={`validate ${showValidate && 'block'}`}>This field is required</p>}
                         {day !== "" && (day < 1 || day > 31) && dayError && <p className={`validate ${dayError && `block`}`} >Must be a valid day</p>}
