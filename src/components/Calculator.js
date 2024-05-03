@@ -7,8 +7,6 @@ export default function Calculator(){
     const [year, setYear] = useState("");
     const [showValidate, setShowValidate] = useState(false);
     const [dayError, showDayError] = useState(false);
-    const [userDay, setUserDay] = useState(0);
-    const [daysInMonth, setDaysInMonth] = useState(0);
     
     const handleDayChange = (e) => {
         const value = e.target.value;
@@ -16,17 +14,6 @@ export default function Calculator(){
 
         //Create a new date object for the current date
         const currentDate = new Date();
-
-        //Create a new date object with the user entered day value
-        const userDate = new Date(currentDate.getFullYear, currentDate.getMonth(), value);
-
-        //Get the day value from the userDate object
-        const dayValue = userDate.getDate();
-        setUserDay(dayValue);
-
-        //Get the number of days in the month of the userDate
-        const daysInCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() +1, 0).getDate();
-        setDaysInMonth(daysInCurrentMonth);
     }
 
     function validateForm(){
@@ -36,13 +23,12 @@ export default function Calculator(){
             setShowValidate(false);
         }
 
-        if ((userDay < 1 || userDay > daysInMonth)) {
+        if (day < 1 || day > 31) {
             showDayError(true);
         }
          else {
             showDayError(false);
         }
-
     }
 
     function handleSubmit(e){
