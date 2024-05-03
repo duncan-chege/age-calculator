@@ -7,7 +7,27 @@ export default function Calculator(){
     const [year, setYear] = useState("");
     const [showValidate, setShowValidate] = useState(false);
     const [dayError, showDayError] = useState(false);
+    const [userDay, setUserDay] = useState(0);
+    const [daysInMonth, setDaysInMonth] = useState(0);
     
+    const handleDayChange = (e) => {
+        const value = e.target.value;
+        setDay(value);
+
+        //Create a new date object for the current date
+        const currentDate = new Date();
+
+        //Create a new date object with the user entered day value
+        const userDate = new Date(currentDate.getFullYear, currentDate.getMonth(), value);
+
+        //Get the day value from the userDate object
+        const dayValue = userDate.getDate();
+        setUserDay(dayValue);
+
+        //Get the number of days in the month of the userDate
+        const daysInCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() +1, 0).getDate();
+        setDaysInMonth(daysInCurrentMonth);
+    }
 
     function validateForm(){
         if (day.length === 0 || month.length === 0 || year.length === 0 ){
@@ -16,12 +36,13 @@ export default function Calculator(){
             setShowValidate(false);
         }
 
-        if ((day !== '' && (day < 1 || day > 31))) {
+        if ((userDay < 1 || userDay > daysInMonth)) {
             showDayError(true);
         }
-         else if (day == "") {
+         else {
             showDayError(false);
         }
+
     }
 
     function handleSubmit(e){
@@ -41,15 +62,15 @@ export default function Calculator(){
                             placeholder="DD"
                             required
                             value={day}
-                            onChange={(e) => setDay(e.target.value)}
-                            className={day.length === 0 && showValidate ? "inavlid-entry" : ""}
+                            onChange={handleDayChange}
+                            className={day.length === 0 && showValidate ? "invalid-entry" : ""}
                         />
                         {day.length === 0 && showValidate && <p className={`validate ${showValidate && 'block'}`}>This field is required</p>}
-                        {dayError && <p className={`validate ${dayError && `block`}`} >Must be a valid day</p>}
+                        {day !== "" && (day < 1 || day > 31) && dayError && <p className={`validate ${dayError && `block`}`} >Must be a valid day</p>}
                     </div>
 
                     <div>                    
-                        <label htmlFor="month" className={month.length === 0 && showValidate && "inavlid-entry"}>MONTH</label><br />
+                        <label htmlFor="month" className={month.length === 0 && showValidate && "invalid-entry"}>MONTH</label><br />
                         <input
                             type="number"
                             id="month" 
