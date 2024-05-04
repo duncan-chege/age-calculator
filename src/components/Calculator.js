@@ -7,10 +7,15 @@ export default function Calculator(){
     const [year, setYear] = useState("");
     const [showValidate, setShowValidate] = useState(false);
     const [dayError, showDayError] = useState(false);
+    const [monthError, showMonthError] = useState(false);
     
-    const handleDayChange = (e) => {
-        const value = e.target.value;
-        setDay(value);
+    const handlePeriodChange = (e) => {
+        const { name, value } = e.target;
+        if (name === "day"){
+            setDay(value);
+        } else if (name === "month") {
+            setMonth(value);
+        }
     }
 
     //Create a new date object for the current date
@@ -29,6 +34,12 @@ export default function Calculator(){
          else {
             showDayError(false);
         }
+
+        if (month < 1 || month > 12) {
+            showMonthError(true);
+        } else {
+            showMonthError(false);
+        }
     }
 
     function handleSubmit(e){
@@ -46,9 +57,9 @@ export default function Calculator(){
                             type="number"
                             id="day"
                             placeholder="DD"
-                            required
+                            name="day"
                             value={day}
-                            onChange={handleDayChange}
+                            onChange={handlePeriodChange}
                             className={day.length === 0 && showValidate ? "invalid-entry" : "" || day !== "" && (day < 1 || day > 31) && showValidate ? "invalid-entry" : ""}
                         />
                         {day.length === 0 && showValidate && <p className={`validate ${showValidate && 'block'}`}>This field is required</p>}
@@ -61,16 +72,17 @@ export default function Calculator(){
                             type="number"
                             id="month" 
                             placeholder="MM"
-                            required
+                            name="month"
                             value={month}
-                            onChange={(e) => setMonth(e.target.value)}
-                            className={month.length === 0 && showValidate ? "inavlid-entry" : ""}
+                            onChange={handlePeriodChange}
+                            className={month.length === 0 && showValidate ? "invalid-entry" : "" || month !== "" && (month < 1 || month > 12) && showValidate ? "invalid-entry" : ""}
                         />
                         {month.length === 0 && showValidate && <p className={`validate ${showValidate && 'block'}`}>This field is required</p>}
+                        {month !== "" && (month < 1 || month > 12) && monthError && <p className={`validate ${monthError && `block`}`} >Must be a valid month</p>}
                     </div>
 
                     <div>
-                        <label htmlFor="year" className={year.length === 0 && showValidate && "inavlid-entry"}>YEAR</label><br />
+                        <label htmlFor="year" className={year.length === 0 && showValidate && "invalid-entry"}>YEAR</label><br />
                         <input 
                             type="number"
                             id="year" 
@@ -78,7 +90,7 @@ export default function Calculator(){
                             required 
                             value={year}
                             onChange={(e) => setYear(e.target.value)}
-                            className={year.length === 0 && showValidate ? "inavlid-entry" : ""}
+                            className={year.length === 0 && showValidate ? "invalid-entry" : ""}
                         />
                     {year.length === 0 && showValidate && <p className={`validate ${showValidate && 'block'}`}>This field is required</p>}
                     </div>
