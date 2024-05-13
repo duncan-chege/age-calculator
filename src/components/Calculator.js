@@ -9,8 +9,11 @@ export default function Calculator() {
     const [dayError, setDayError] = useState(false);
     const [monthError, setMonthError] = useState(false);
     const [yearError, setYearError] = useState(false);
-
-    const currentYear = new Date().getFullYear();
+    const [errors, setErrors] = useState({
+        day: "",
+        month: "",
+        year: ""
+    });
 
     const handleMonthChange = (e) => {
         const { value } = e.target;
@@ -19,13 +22,7 @@ export default function Calculator() {
 
     const handleYearChange = (e) => {
         const { value } = e.target;
-        const parsedYear = parseInt(value, 10);
-
-        if (value.length === 4 && parsedYear >= 1970 && parsedYear <= currentYear) {
-            setYear(parsedYear);
-        } else {
-            setYear("");
-        }
+        setYear(value);
     }
 
     const handleDayChange = (e) => {
@@ -34,58 +31,71 @@ export default function Calculator() {
         setDayError(false);
     }
 
-    //Create a new date object for the current date
-    const currentDate = new Date();
 
-    function validateForm(){
-        if (day.length === 0 || monthNumber.length === 0 || newYear.length === 0 ){
-            setShowValidate(true);
-        } else {
-            setShowValidate(false);
+    function formValidation(){
+        let dayError, monthError, yearError = "";
+        const currentYear = new Date().getFullYear();
+        const currentDate = new Date();
+
+        if (day && (day < 1 || day > 31)) {
+            dayError = "Must be a valid day";
+        } else if (day === "") {
+            dayError = "This field is required";
         }
 
-        if (day < 1 || day > 31) {
-            setDayError(true);
-        }
-         else {
-            setDayError(false);
-        }
-
-        if (monthNumber >= 1 && monthNumber <= 12) {
-            const monthName = new Date(newYear, monthNumber - 1, 1).toLocaleString('default', { month: 'long' });
+        if (monthNumber && (monthNumber < 1 || monthNumber > 12)) {
+            const monthName = new Date(newYear, monthNumber -1, 1).toLocaleString('default', {month: 'long'});
             console.log(monthName);
-            setMonthError(false);
-        } else {
-            setMonthError(true); // Reset month if input is invalid
+            monthError = "Must be a valid month";
+        } else if (monthNumber === "") {
+            monthError = "This field is required";
         }
+
+        if (newYear && (newYear < 1970 || newYear > currentYear)){
+            yearError = "Must be a valid year";
+        } else if (newYear === ""){
+            yearError = "This field is required";
+        }
+
+        if (day && monthNumber && newYear) {
+            const daysInMonth = new Date(newYear, monthNumber, 0).getDate();
+            if(day < 1 || day > daysInMonth) {
+                dayError = "Must be a valid date";
+            }
+        }
+
+        setErrors({
+            day: dayError,
+            month: monthError,
+            year: yearError
+        })
     }
 
     function handleSubmit(e){
         e.preventDefault();
-        validateForm();
+        formValidation();
     }
 
     return (
         <div className="calculator-app">
-            <form onSubmit={handleSubmit} noValidate>
+            <form onSubmit={handleSubmit}>
                 <div className="entry-fields">
-                <div>
-                <label htmlFor="day" className={(day < 1 || day > 31) && showValidate ? "invalid-entry" : ""}>DAY</label><br />
-                <input 
-                    type="number"
-                    id="day"
-                    placeholder="DD"
-                    name="day"
-                    value={day}
-                    onChange={handleDayChange}
-                    className=""
-                />
-                <p className="">This field is required</p>
-                    <p className="">Must be a valid day</p>
-            </div>
+                    <div>
+                        <label htmlFor="day" className={errors.day ? "invalid-entry" : ""}>DAY</label><br />
+                        <input 
+                            type="number"
+                            id="day"
+                            placeholder="DD"
+                            name="day"
+                            value={day}
+                            onChange={handleDayChange}
+                            className={errors.day ? "invalid-entry" : ""}
+                        />
+                        {errors.day && <p className="validate block">{errors.day}</p>}
+                    </div>
 
                     <div>                    
-                        <label htmlFor="monthNumber" className={(monthNumber < 1 || monthNumber > 12) && showValidate && "invalid-entry"}>MONTH</label><br />
+                        <label htmlFor="monthNumber" className={errors.month ? "invalid-entry" : ""}>MONTH</label><br />
                         <input
                             type="number"
                             id="month" 
@@ -93,34 +103,29 @@ export default function Calculator() {
                             name="monthNumber"
                             value={monthNumber}
                             onChange={handleMonthChange}
-                            className={(monthNumber < 1 || monthNumber > 12) && showValidate && "invalid-entry"}
+                            className={errors.month ? "invalid-entry" : ""}
                         />
-                        {monthNumber.length === 0 && showValidate && <p className={`validate ${showValidate && 'block'}`}>This field is required</p>}
-                        {monthNumber !== "" && monthError && <p className={`validate ${monthNumber && `block`}`} >Must be a valid month</p>}
+                        {errors.month && (<p className={`validate block`}>{errors.month}</p>)}
                     </div>
 
                     <div>
-                        <label htmlFor="year" className={showValidate && "invalid-entry"}>YEAR</label><br />
+                        <label htmlFor="year" className={errors.year ? "invalid-entry" : ""}>YEAR</label><br />
                         <input 
-                           type="number"
-                           id="year"
-                           placeholder="YYYY"
-                           name="newYear"
-                           value={newYear}
-                           onChange={handleYearChange}
-                           className={newYear.length === 0 && showValidate ? "invalid-entry" : "" || (newYear < 1970 || newYear > currentYear) && showValidate ? "invalid-entry" : ""}
+                        type="number"
+                        id="year"
+                        placeholder="YYYY"
+                        name="newYear"
+                        value={newYear}
+                        onChange={handleYearChange}
+                        className={errors.year ? "invalid-entry" : ""}
                         />
-                    {newYear.length === 0 && showValidate && <p className={`validate ${showValidate && 'block'}`}>This field is required</p>}
-                    {newYear > 2024 && yearError && <p className={`validate ${monthNumber && `block`}`} >Must be in the past</p>}
+                    {errors.year && (<p className="validate block">{errors.year}</p>)}
                     </div>
-
                 </div>
+
                 <div className="submit-btn">
                     <hr />
-                    <input 
-                        type="submit"
-                        value=""
-                        onClick={()=>validateForm()} />
+                    <input type="submit" value="" />
                 </div>
             </form>
     
