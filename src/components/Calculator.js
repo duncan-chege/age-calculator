@@ -9,10 +9,16 @@ export default function Calculator() {
     const [dayError, setDayError] = useState(false);
     const [monthError, setMonthError] = useState(false);
     const [yearError, setYearError] = useState(false);
+    const [futureError, setFutureError] = useState("");
+    const [dayDifference, setDaysDifference] = useState(null);
+    const [monthDifference, setMonthDifference] = useState(null);
+    const [yearDifference, setYearDifference] = useState(null);
+
     const [errors, setErrors] = useState({
         day: "",
         month: "",
-        year: ""
+        year: "",
+        future: "",
     });
 
     const handleMonthChange = (e) => {
@@ -33,42 +39,57 @@ export default function Calculator() {
 
 
     function formValidation(){
-        let dayError, monthError, yearError = "";
+        let dayError, monthError, yearError, futureError = "";
         const currentYear = new Date().getFullYear();
-        const currentDate = new Date();
+        const today = new Date();
 
-        if (day && (day < 1 || day > 31)) {
+        // Validate day
+        if (!day || (day < 1 || day > 31)) {
             dayError = "Must be a valid day";
-        } else if (day === "") {
-            dayError = "This field is required";
         }
 
-        if (monthNumber && (monthNumber < 1 || monthNumber > 12)) {
-            const monthName = new Date(newYear, monthNumber -1, 1).toLocaleString('default', {month: 'long'});
-            console.log(monthName);
+        // Validate month
+        if (!monthNumber || (monthNumber < 1 || monthNumber > 12)) {
             monthError = "Must be a valid month";
-        } else if (monthNumber === "") {
-            monthError = "This field is required";
         }
 
-        if (newYear && (newYear < 1970 || newYear > currentYear)){
+        // Validate year
+        if (!newYear || (newYear < 1970 || newYear > currentYear)) {
             yearError = "Must be a valid year";
-        } else if (newYear === ""){
-            yearError = "This field is required";
         }
 
-        if (day && monthNumber && newYear) {
-            const daysInMonth = new Date(newYear, monthNumber, 0).getDate();
-            if(day < 1 || day > daysInMonth) {
-                dayError = "Must be a valid date";
+        // Future date check
+        const inputDate = new Date(`${newYear}-${monthNumber.padStart(2, '0')}-${day.padStart(2, '0')}`);
+        if (inputDate>today){
+            futureError = "No future dates";
+        }
+
+        // Set errors state
+        setErrors({ day: dayError, month: monthError, year: yearError, future: futureError });
+
+        // Calculate differences
+        if (!dayError && !monthError && !yearError) {
+            const inputDate = new Date(`${newYear}-${monthNumber.padStart(2, '0')}-${day.padStart(2, '0')}`);
+
+            let yearsDifference = today.getFullYear() - inputDate.getFullYear();
+            let monthsDifference = today.getMonth() - inputDate.getMonth();
+            let daysDifference = today.getDate() - inputDate.getDate();
+
+            if (daysDifference < 0) {
+                monthsDifference -= 1;
+                const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                daysDifference += prevMonth.getDate();
             }
-        }
 
-        setErrors({
-            day: dayError,
-            month: monthError,
-            year: yearError
-        })
+            if (monthsDifference < 0) {
+                yearsDifference -= 1;
+                monthsDifference += 12;
+            }
+
+            setDaysDifference(daysDifference);
+            setMonthDifference(monthsDifference);
+            setYearDifference(yearsDifference);
+        }
     }
 
     function handleSubmit(e){
@@ -123,6 +144,8 @@ export default function Calculator() {
                     </div>
                 </div>
 
+                {errors.future && (<p className="validate block">{errors.future}</p>)}
+
                 <div className="submit-btn">
                     <hr />
                     <input type="submit" value="" />
@@ -130,10 +153,20 @@ export default function Calculator() {
             </form>
     
             <div className="entered-values">
-                <p><span className="dash">--</span>years</p>
-                <p><span className="dash">--</span>months</p>
-                <p><span className="dash">--</span>days</p>
-            </div>
+                {errors.day || errors.month || errors.year || errors.future ? (
+                    <>
+                        <p><span className="dash">--</span>years</p>
+                        <p><span className="dash">--</span>months</p>
+                        <p><span className="dash">--</span>days</p>
+                    </>
+                ) : (
+                    <>
+                        <p><span className="dash">{yearDifference === null ? "--" : yearDifference }</span>years</p>
+                        <p><span className="dash">{monthDifference === null ? "--" : monthDifference }</span>months</p>
+                        <p><span className="dash">{dayDifference === null ? "--" : dayDifference }</span>days</p>
+                    </>
+                )}
+           </div>
   
         <div className="attribution">
           Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
