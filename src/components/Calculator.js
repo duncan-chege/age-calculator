@@ -1,5 +1,6 @@
 import "./Styles.css";
 import { useState } from "react";
+import Results from "./Results";
 
 export default function Calculator() {
     const [day, setDay] = useState("");
@@ -98,80 +99,68 @@ export default function Calculator() {
     }
 
     return (
-        <div className="calculator-app">
-            <form onSubmit={handleSubmit}>
-                <div className="entry-fields">
-                    <div>
-                        <label htmlFor="day" className={errors.day ? "invalid-entry" : ""}>DAY</label><br />
-                        <input 
+        <main role="main">
+            <div className="calculator-app">
+                <form onSubmit={handleSubmit}>
+                    <div className="entry-fields" role="contentinfo">
+                        <div>
+                            <label htmlFor="day" className={errors.day ? "invalid-entry" : ""}>DAY</label><br />
+                            <input 
+                                type="number"
+                                id="day"
+                                placeholder="DD"
+                                name="day"
+                                value={day}
+                                onChange={handleDayChange}
+                                className={errors.day ? "invalid-entry" : ""}
+                            />
+                            {errors.day && <p className="validate block">{errors.day}</p>}
+                        </div>
+
+                        <div>                    
+                            <label htmlFor="monthNumber" className={errors.month ? "invalid-entry" : ""}>MONTH</label><br />
+                            <input
+                                type="number"
+                                id="month" 
+                                placeholder="MM"
+                                name="monthNumber"
+                                value={monthNumber}
+                                onChange={handleMonthChange}
+                                className={errors.month ? "invalid-entry" : ""}
+                            />
+                            {errors.month && (<p className={`validate block`}>{errors.month}</p>)}
+                        </div>
+
+                        <div>
+                            <label htmlFor="year" className={errors.year ? "invalid-entry" : ""}>YEAR</label><br />
+                            <input 
                             type="number"
-                            id="day"
-                            placeholder="DD"
-                            name="day"
-                            value={day}
-                            onChange={handleDayChange}
-                            className={errors.day ? "invalid-entry" : ""}
-                        />
-                        {errors.day && <p className="validate block">{errors.day}</p>}
+                            id="year"
+                            placeholder="YYYY"
+                            name="newYear"
+                            value={newYear}
+                            onChange={handleYearChange}
+                            className={errors.year ? "invalid-entry" : ""}
+                            />
+                        {errors.year && (<p className="validate block">{errors.year}</p>)}
+                        </div>
                     </div>
 
-                    <div>                    
-                        <label htmlFor="monthNumber" className={errors.month ? "invalid-entry" : ""}>MONTH</label><br />
-                        <input
-                            type="number"
-                            id="month" 
-                            placeholder="MM"
-                            name="monthNumber"
-                            value={monthNumber}
-                            onChange={handleMonthChange}
-                            className={errors.month ? "invalid-entry" : ""}
-                        />
-                        {errors.month && (<p className={`validate block`}>{errors.month}</p>)}
+                    {errors.future && (<p className="validate block">{errors.future}</p>)}
+
+                    <div className="submit-btn">
+                        <hr />
+                        <input type="submit" aria-label="calculate age" />
                     </div>
-
-                    <div>
-                        <label htmlFor="year" className={errors.year ? "invalid-entry" : ""}>YEAR</label><br />
-                        <input 
-                        type="number"
-                        id="year"
-                        placeholder="YYYY"
-                        name="newYear"
-                        value={newYear}
-                        onChange={handleYearChange}
-                        className={errors.year ? "invalid-entry" : ""}
-                        />
-                    {errors.year && (<p className="validate block">{errors.year}</p>)}
-                    </div>
-                </div>
-
-                {errors.future && (<p className="validate block">{errors.future}</p>)}
-
-                <div className="submit-btn">
-                    <hr />
-                    <input type="submit" value="" />
-                </div>
-            </form>
-    
-            <div className="entered-values">
-                {errors.day || errors.month || errors.year || errors.future ? (
-                    <>
-                        <p><span className="dash">--</span>years</p>
-                        <p><span className="dash">--</span>months</p>
-                        <p><span className="dash">--</span>days</p>
-                    </>
-                ) : (
-                    <>
-                        <p><span className="dash">{yearDifference === null ? "--" : yearDifference }</span>years</p>
-                        <p><span className="dash">{monthDifference === null ? "--" : monthDifference }</span>months</p>
-                        <p><span className="dash">{dayDifference === null ? "--" : dayDifference }</span>days</p>
-                    </>
-                )}
-           </div>
-  
-        <div className="attribution">
-          Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
-          Coded by Duncan Chege
-        </div>
-      </div>
+                </form>
+        
+               <Results
+                    errors ={errors}
+                    dayDifference={dayDifference}
+                    monthDifference={monthDifference}
+                    yearDifference={yearDifference}
+               />
+            </div>
+      </main>
     );
 }
