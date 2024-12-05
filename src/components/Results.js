@@ -18,10 +18,5 @@ export default function Results ({errors={}, yearDifference, monthDifference, da
                     </>
                 )}
             </div>
-
-            <div className="attribution" role="extrainfo">
-                Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
-                Coded by Duncan Chege
-            </div>
     </>
 )}
